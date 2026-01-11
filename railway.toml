@@ -1,0 +1,23 @@
+# ===================================
+# Railway Configuration
+# https://docs.railway.app/reference/config-as-code
+# ===================================
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Usar el Dockerfile para el deploy
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+
+# Health check
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+
+# Restart en caso de fallo
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+# Número de réplicas (1 para scraping, evitar duplicados)
+numReplicas = 1
