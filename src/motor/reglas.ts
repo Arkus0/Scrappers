@@ -227,6 +227,7 @@ function fuentesPasivas(e: Partida): FuentePasiva[] {
   for (const j of [0, 1] as Jug[]) {
     const p = e.jugadores[j];
     for (const ej of enJuego(e, j)) {
+      if (!conocida(e, ej.uid)) continue; // en una vista, las candidaturas rivales aún sin descubrir
       const c = polUid(e, ej.uid);
       if (c.carisma?.pasivas && leyendaActiva(e, c, j)) r.push({ pasivas: c.carisma.pasivas, dueno: j, uid: ej.uid, enTribuna: p.tribuna === ej });
       if (ej.herramienta !== null) {
