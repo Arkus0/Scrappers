@@ -282,7 +282,7 @@ function HojaAcciones({ v, sel, acciones, onAccion, onCerrar }: { v: Vista; sel:
   const ej = sel.tipo === 'mesa' ? [tribuna, ...v.jugadores[yo].banquillo].find((x) => x?.uid === sel.uid) : null;
   return (
     <>
-      <div className="velo" style={{ background: 'rgba(5,9,16,.45)' }} onClick={onCerrar} />
+      <div className="velo-hoja" onClick={onCerrar} />
       <div className="hoja" role="dialog" aria-label={c.nombre}>
         <div className="hoja-cab"><h3>{c.nombre}</h3><button className="boton pequeno" type="button" onClick={onCerrar}>Cerrar</button></div>
         <div className="hoja-detalle">

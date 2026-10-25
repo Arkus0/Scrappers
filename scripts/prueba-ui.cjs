@@ -13,7 +13,8 @@ async function jugar(b, nombre, viewport) {
   const p = await ctx.newPage();
   const errores = [];
   p.on('pageerror', (e) => errores.push(String(e)));
-  p.on('console', (m) => { if (m.type() === 'error') errores.push(m.text()); });
+  // las fuentes de Google se bloquean a propósito en la prueba
+  p.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('net::ERR_FAILED')) errores.push(m.text()); });
   await p.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
   await p.goto('file://' + path.resolve('dist/index.html'), { waitUntil: 'domcontentloaded' });
   await p.evaluate(() => localStorage.clear());
@@ -23,7 +24,8 @@ async function jugar(b, nombre, viewport) {
   const clic = async (sel) => { const el = await p.$(sel); if (!el) return false; try { await el.click({ timeout: 1500 }); return true; } catch { return false; } };
   let capturas = 0;
   let pasos = 0;
-  for (; pasos < 3000; pasos++) {
+  for (; pasos < (Number(process.env.PASOS) || 1500); pasos++) {
+    if (process.env.DEPURAR) console.log(pasos, await p.$$eval("[data-accion]", (els) => els.map((e) => e.getAttribute("data-accion")).join(" ")), await p.$eval(".barra-turno .info", (e) => e.textContent).catch(() => ""), await p.$eval(".toast", (e) => e.textContent).catch(() => ""), errores.slice(-2).join(" | ").slice(0, 300));
     if (await p.$('[data-accion="fin"]')) break;
     if (await clic('[data-accion="cortina"]')) continue;
     // decisiones

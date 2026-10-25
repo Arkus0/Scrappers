@@ -1,12 +1,14 @@
-// Pide decisiones a la IA en un Web Worker (si el navegador no puede, decide en el hilo principal).
+// Pide decisiones a la IA en un Web Worker. Si el navegador no puede (p. ej. al abrir el HTML como archivo suelto)
+// o el trabajador no contesta a tiempo, decide en el hilo principal: la partida nunca se queda colgada.
 import type { Nivel } from './bot';
-import type { Respuesta, Vista } from '../motor/tipos';
+import type { Decision, Respuesta, Vista } from '../motor/tipos';
 import Trabajador from './trabajador?worker&inline';
 
 let trabajador: Worker | null = null;
-let fallo = false;
+let fallo = typeof location !== 'undefined' && location.protocol === 'file:';
 let sig = 1;
 const pendientes = new Map<number, (r: Respuesta | null) => void>();
+const PLAZO = 6000;
 
 function obtener(): Worker | null {
   if (fallo) return null;
@@ -18,7 +20,9 @@ function obtener(): Worker | null {
       pendientes.delete(ev.data.pid);
       f?.(ev.data.r ?? null);
     };
-    trabajador.onerror = () => { fallo = true; for (const f of pendientes.values()) f(null); pendientes.clear(); trabajador = null; };
+    const caer = () => { fallo = true; for (const f of pendientes.values()) f(null); pendientes.clear(); trabajador?.terminate(); trabajador = null; };
+    trabajador.onerror = caer;
+    trabajador.onmessageerror = caer;
     return trabajador;
   } catch {
     fallo = true;
@@ -31,9 +35,18 @@ export async function pedirDecision(vista: Vista, nivel: Nivel): Promise<Respues
   const w = obtener();
   if (w) {
     const pid = sig++;
-    const r = await new Promise<Respuesta | null>((res) => { pendientes.set(pid, res); w.postMessage({ vista, nivel, semilla, pid }); });
+    const r = await new Promise<Respuesta | null>((res) => {
+      pendientes.set(pid, res);
+      w.postMessage({ vista, nivel, semilla, pid });
+      setTimeout(() => { if (pendientes.has(pid)) { pendientes.delete(pid); fallo = true; res(null); } }, PLAZO);
+    });
     if (r) return r;
   }
   const { decidirIA } = await import('./bot');
-  return decidirIA(vista, nivel, semilla);
+  try {
+    return decidirIA(vista, nivel, semilla);
+  } catch {
+    const { respuestaAzar } = await import('./azar');
+    return respuestaAzar(vista.pendiente as Decision, { rng: semilla });
+  }
 }

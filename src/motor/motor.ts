@@ -845,20 +845,20 @@ function aplicarEfecto(e: Partida, t: Extract<Tarea, { t: 'efecto' }>, r: Respue
     case 'dano': case 'bulo': {
       const bulo = ef.e === 'bulo';
       const objs = resolverObjetivos(e, ef.a, ctx, r, `Elige a quién ${bulo ? 'le llega el bulo' : 'golpear'} (${ef.n})`,
-        bulo ? undefined : (u) => !(enBanquillo(e, u) && tieneCordon(e, u)));
+        (u) => cumpleFiltroPol(e, u, ef.filtro) && (bulo || !(enBanquillo(e, u) && tieneCordon(e, u))));
       if (!objs) return false;
       for (const u of objs) aplicarDano(e, u, ef.n);
       return true;
     }
     case 'autodano': if (ctx.fuente !== undefined) aplicarDano(e, ctx.fuente, ef.n); return true;
     case 'curar': {
-      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige a quién curar', (u) => (ubicar(e, u)?.ej.dano ?? 0) > 0);
+      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige a quién curar', (u) => (ubicar(e, u)?.ej.dano ?? 0) > 0 && cumpleFiltroPol(e, u, ef.filtro));
       if (!objs) return false;
       for (const u of objs) curar(e, u, ef.n);
       return true;
     }
     case 'estado': {
-      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige objetivo', (u) => !!ubicar(e, u)?.tribuna);
+      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige objetivo', (u) => !!ubicar(e, u)?.tribuna && cumpleFiltroPol(e, u, ef.filtro));
       if (!objs) return false;
       for (const u of objs) ponerEstado(e, u, ef.estado);
       return true;
@@ -1020,7 +1020,7 @@ function aplicarEfecto(e: Partida, t: Extract<Tarea, { t: 'efecto' }>, r: Respue
       return true;
     }
     case 'descartarVoto': {
-      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige a quién quitar votos', (u) => (ubicar(e, u)?.ej.votos.length ?? 0) > 0);
+      const objs = resolverObjetivos(e, ef.a, ctx, r, 'Elige a quién quitar votos', (u) => (ubicar(e, u)?.ej.votos.length ?? 0) > 0 && cumpleFiltroPol(e, u, ef.filtro));
       if (!objs) return false;
       for (const u of objs) {
         const w = ubicar(e, u);

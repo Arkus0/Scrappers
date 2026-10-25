@@ -108,11 +108,11 @@ export type Efecto =
   | { e: 'masDano'; n: number }
   | { e: 'masDanoPor'; n: number; por: Contador; max?: number }
   | { e: 'fallar' }
-  | { e: 'dano'; n: number; a: Sel }
-  | { e: 'bulo'; n: number; a: Sel }
+  | { e: 'dano'; n: number; a: Sel; filtro?: FiltroPol }
+  | { e: 'bulo'; n: number; a: Sel; filtro?: FiltroPol }
   | { e: 'autodano'; n: number }
-  | { e: 'curar'; n: number | 'todo'; a: Sel }
-  | { e: 'estado'; estado: EstadoAlterado; a: Sel }
+  | { e: 'curar'; n: number | 'todo'; a: Sel; filtro?: FiltroPol }
+  | { e: 'estado'; estado: EstadoAlterado; a: Sel; filtro?: FiltroPol }
   | { e: 'quitarEstados'; a: Sel }
   | { e: 'monedas'; n: number | 'votosFuente'; porCara: Efecto[] }
   | { e: 'hastaCruz'; porCara: Efecto[]; max?: number }
@@ -126,7 +126,7 @@ export type Efecto =
   | { e: 'descartarMazo'; n: number; quien: 'rival' | 'yo' }
   | { e: 'verMano' }
   | { e: 'recuperar'; filtro: FiltroCarta; n: number; destino: 'mano' | 'mazo' }
-  | { e: 'descartarVoto'; n: number | 'todos'; a: Sel }
+  | { e: 'descartarVoto'; n: number | 'todos'; a: Sel; filtro?: FiltroPol }
   | { e: 'adjuntarVoto'; tipo: Tipo | 'zona'; n: number; a: Sel }
   | { e: 'moverVoto'; n: number; desde: 'banquilloPropio' | 'fuente'; a: Sel }
   | { e: 'cambiarRival'; elige: 'yo' | 'rival' }
