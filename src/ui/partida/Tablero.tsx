@@ -320,13 +320,14 @@ function Registro({ v }: { v: Vista }) {
 interface Flotante { id: number; x: number; y: number; txt: string; cura?: boolean }
 
 function Efectos({ v }: { v: Vista }) {
-  const vistos = useRef(v.sucesos.length);
+  const vistos = useRef(v.nSucesos);
   const [moneda, setMoneda] = useState<boolean | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [flot, setFlot] = useState<Flotante[]>([]);
   useEffect(() => {
-    const nuevos = v.sucesos.slice(vistos.current);
-    vistos.current = v.sucesos.length;
+    const n = Math.min(v.sucesos.length, Math.max(0, v.nSucesos - vistos.current));
+    const nuevos = n ? v.sucesos.slice(-n) : [];
+    vistos.current = v.nSucesos;
     if (!nuevos.length) return;
     const timers: number[] = [];
     let retraso = 0;

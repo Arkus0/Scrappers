@@ -435,6 +435,8 @@ export interface Partida {
   pendiente: Decision | null;
   registro: EntradaRegistro[];
   sucesos: Suceso[];
+  /** sucesos emitidos desde el principio (la lista se recorta) */
+  nSucesos: number;
   ganador: { jug: Jug | null; motivo: string } | null;
   silencio?: boolean;
 }

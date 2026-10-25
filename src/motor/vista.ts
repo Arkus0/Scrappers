@@ -3,6 +3,9 @@
 import type { Jug, Partida, Uid, Vista } from './tipos';
 import { OTRO } from './tipos';
 
+/** Sucesos y entradas del registro que viajan en cada vista. */
+export const SUCESOS_VISTA = 120;
+
 export function vistaPara(e: Partida, yo: Jug): Vista {
   const v = structuredClone(e) as unknown as Vista;
   v.yo = yo;
@@ -26,7 +29,9 @@ export function vistaPara(e: Partida, yo: Jug): Vista {
   // lo que hay en el mazo y aparece en una decisión del propio jugador (buscar, mirar) sí lo ve
   if (v.pendiente && v.pendiente.jugador !== yo) v.pendiente = { tipo: 'espera', jugador: v.pendiente.jugador };
   if (v.pendiente?.tipo === 'cartas') for (const [u, id] of Object.entries(v.pendiente.visibles)) v.cartaDe[Number(u)] = id;
-  v.registro = v.registro.filter((x) => x.solo === undefined || x.solo === yo);
+  v.registro = v.registro.filter((x) => x.solo === undefined || x.solo === yo).slice(-SUCESOS_VISTA);
+  // para animar basta con los últimos: nSucesos dice cuántos hubo en total
+  v.sucesos = v.sucesos.slice(-SUCESOS_VISTA);
   // las tareas de la pila solo llevan uids y efectos de cartas ya descubiertas
   return v;
 }

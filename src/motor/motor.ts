@@ -35,7 +35,8 @@ export function log(e: Partida, texto: string, jug: Jug | null = null, solo?: Ju
 function suceso(e: Partida, s: Suceso) {
   if (e.silencio) return;
   e.sucesos.push(s);
-  if (e.sucesos.length > 400) e.sucesos.splice(0, e.sucesos.length - 400);
+  e.nSucesos++;
+  if (e.sucesos.length > 4000) e.sucesos.splice(0, e.sucesos.length - 4000);
 }
 
 function encolar(e: Partida, ...tareas: Tarea[]) {
@@ -232,7 +233,7 @@ export function crearPartida(semilla: number, mazos: [MazoPartida, MazoPartida])
     v: 1, rng: semilla | 0, turno: 0, enTurno: 0, primero: 0, fase: 'preparacion',
     jugadores: [jugadorVacio(mazos[0]), jugadorVacio(mazos[1])], cartaDe: {}, sigUid: 1, escenario: null, clima: CLIMA_INICIAL,
     flags: { voto: false, asesor: false, relevo: false, escenario: false, jugadas: 0, votoExtra: 0 }, temporales: [], ataque: null,
-    anulada: false, pila: [], pendiente: null, registro: [], sucesos: [], ganador: null,
+    anulada: false, pila: [], pendiente: null, registro: [], sucesos: [], nSucesos: 0, ganador: null,
   };
   aleatorio(e); // descarta el primer valor de la semilla
   prepararMazo(e, 0, mazos[0]);
