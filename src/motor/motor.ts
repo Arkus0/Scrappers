@@ -297,6 +297,11 @@ function validar(_e: Partida, d: Decision, r: Respuesta) {
   }
 }
 
+/** Vuelve a calcular las acciones legales de la decisión pendiente (tras tocar el estado a mano en pruebas o en el editor). */
+export function refrescarDecision(e: Partida) {
+  if (e.pendiente?.tipo === 'accion') e.pendiente.acciones = accionesLegales(e, e.pendiente.jugador);
+}
+
 export function clonar(e: Partida): Partida {
   return structuredClone(e);
 }
@@ -304,11 +309,18 @@ export function clonar(e: Partida): Partida {
 /** Ejecuta unas tareas sueltas sobre la partida (pruebas y simulaciones). */
 export function ejecutarAislado(e: Partida, tareas: Tarea[]) {
   const pila = e.pila;
+  const pendiente = e.pendiente;
   e.pila = [];
+  e.pendiente = null;
   encolar(e, ...tareas);
   avanzar(e);
-  if (!e.pendiente) e.pila = pila;
-  else e.pila = [...pila, ...e.pila];
+  if (e.ganador) return;
+  if (e.pendiente) e.pila = [...pila, ...e.pila];
+  else {
+    e.pila = pila;
+    e.pendiente = pendiente;
+    refrescarDecision(e);
+  }
 }
 
 // ————————————————————————————————————— tareas
@@ -421,11 +433,9 @@ function inicioTurno(e: Partida): boolean {
       tareas.push({ t: 'kos' });
     }
   } else robar(e, j, 1);
-  // la zona de voto (el primero no recibe voto en su primer turno)
-  if (!(e.turno === 1)) {
-    p.votoActual = p.votoSiguiente;
-    p.votoSiguiente = elegirAzar(e, p.tipos);
-  } else p.votoActual = null;
+  // la zona de voto (el primero sí recibe voto, pero no puede atacar en su primer turno)
+  p.votoActual = p.votoSiguiente;
+  p.votoSiguiente = elegirAzar(e, p.tipos);
   // efectos de inicio de turno: escenario, tertulianos y carismas
   if (e.escenario) {
     const c = cartaUid(e, e.escenario.uid) as CartaEntrenador;
