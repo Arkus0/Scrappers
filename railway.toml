@@ -1,15 +1,12 @@
-# ===================================
-# Railway Configuration
-# https://docs.railway.app/reference/config-as-code
-# ===================================
-
+# Railway: https://docs.railway.app/reference/config-as-code
 [build]
-builder = "nixpacks"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-healthcheckPath = "/health"
+healthcheckPath = "/salud"
 healthcheckTimeout = 30
-restartPolicyType = "on_failure"
+restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
+# las salas online viven en memoria: una sola réplica
 numReplicas = 1
