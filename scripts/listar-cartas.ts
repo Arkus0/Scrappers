@@ -1,4 +1,5 @@
-// Resumen de la colección (npm run cartas) y listado completo en docs/CARTAS.md con --md.
+// Resumen de la colección (npm run cartas), listado completo en docs/CARTAS.md con --md
+// y la lista de las cartas con su archivo de ilustración en docs/cartas.json con --json.
 import { writeFileSync } from 'node:fs';
 import { LISTA_CARTAS, esPolitico } from '../src/datos/catalogo';
 import { PARTIDOS, TIPO_INFO } from '../src/datos/partidos';
@@ -36,4 +37,20 @@ if (process.argv.includes('--md')) {
   }
   writeFileSync('docs/CARTAS.md', filas.join('\n') + '\n');
   console.log('docs/CARTAS.md escrito');
+}
+
+if (process.argv.includes('--json')) {
+  const cartas = LISTA_CARTAS.filter((c) => !c.retirada).map((c) => ({
+    id: c.id,
+    archivo: `${c.id}.png`,
+    nombre: c.nombre,
+    clase: CLASE_TXT[c.clase],
+    tipo: esPolitico(c) ? TIPO_INFO[c.tipo].nombre : null,
+    partido: esPolitico(c) ? PARTIDOS[c.partido].siglas : null,
+    rareza: c.rareza,
+    coleccion: c.coleccion,
+    cargo: c.cargo ?? null,
+  }));
+  writeFileSync('docs/cartas.json', JSON.stringify({ total: cartas.length, cartas }, null, 1) + '\n');
+  console.log(`docs/cartas.json escrito: ${cartas.length} cartas`);
 }

@@ -20,7 +20,6 @@
     "typecheck": "tsc --noEmit",
     "simular": "tsx scripts/simular.ts",
     "cartas": "tsx scripts/listar-cartas.ts",
-    "prompts": "tsx scripts/prompts-imagenes.ts",
     "ilustraciones": "node scripts/preparar-ilustraciones.mjs"
   },
   "dependencies": {

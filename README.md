@@ -26,7 +26,7 @@ npm run dev            # juego en http://localhost:5173
 npm run dev:servidor   # servidor online en :8080 (Vite le pasa /ws)
 npm test               # reglas, cartas, contenido, IA, perfil, sobres, campaña y servidor
 npm run simular -- --n 200   # equilibrio de los mazos (IA contra IA)
-npm run cartas -- --md       # docs/CARTAS.md
+npm run cartas -- --md --json   # docs/CARTAS.md y docs/cartas.json
 ```
 
 ## Desplegar en Vercel
@@ -50,10 +50,10 @@ configurar nada.
 
 Cada carta trae un arte generado por código. Para ponerle una ilustración propia:
 
-1. Busca la carta en `docs/PROMPTS_IMAGENES.md` (o `docs/cartas.json`): ahí están las 306, cada una con su prompt
-   y el nombre de archivo que le toca.
-2. Guarda la imagen en `ilustraciones/` con el id de la carta (`N-001.jpg`, `B-07.png`…).
+1. La lista de las 306 cartas, con el nombre de archivo que le toca a cada una, está en `docs/cartas.json`
+   (y con sus reglas en `docs/CARTAS.md`). `npm run cartas -- --json --md` las vuelve a generar si cambian las cartas.
+2. Guarda la imagen en `ilustraciones/` con el id de la carta (`N-001.jpg`, `B-07.png`…), en proporción 20:13.
 3. `npm run ilustraciones` (o el propio build) la recorta y la convierte a WebP; si falta alguna, la carta sigue con su arte
-   generado. `npm run prompts` vuelve a generar la lista si cambian las cartas.
+   generado.
 
 Normas: nada de caras ni parecido con personas reales, ni logotipos de partidos, ni banderas oficiales, ni texto.

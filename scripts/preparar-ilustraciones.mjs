@@ -28,7 +28,7 @@ let ids = null;
 try {
   ids = new Set(JSON.parse(readFileSync('docs/cartas.json', 'utf8')).cartas.map((c) => c.id));
 } catch {
-  console.warn('Aviso: falta docs/cartas.json (npm run prompts); no se comprueba que los ids existan.');
+  console.warn('Aviso: falta docs/cartas.json (npm run cartas -- --json); no se comprueba que los ids existan.');
 }
 
 let sharp = null;
