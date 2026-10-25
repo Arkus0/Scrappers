@@ -1,4 +1,4 @@
-// Expansión «29N»: se compone de las tandas por tipo y clase (N-001 … N-241).
+// Expansión «29N»: se compone de las tandas por tipo y clase (N-001 … N-246).
 import type { Carta } from '../../motor/tipos';
 import { CARTAS_MAGENTA_VERDE } from './magenta-verde';
 import { CARTAS_AMBAR, CARTAS_INCOLORO, CARTAS_MORADO } from './morado-ambar-incoloro';

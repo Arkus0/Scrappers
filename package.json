@@ -4,18 +4,24 @@
   "version": "0.1.0",
   "type": "module",
   "description": "176 TCG · ¡Hazte con los 176! Juego de cartas coleccionables sobre las elecciones generales del 29N de 2026.",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "dev:servidor": "tsx watch servidor/index.ts",
-    "build": "tsc --noEmit && vite build && node scripts/construir-servidor.mjs",
-    "build:cliente": "vite build",
+    "build": "npm run build:web",
+    "build:web": "node scripts/preparar-ilustraciones.mjs --si-hay && tsc --noEmit && vite build --mode web",
+    "build:archivo": "node scripts/preparar-ilustraciones.mjs --si-hay && tsc --noEmit && vite build",
+    "build:servidor": "npm run build:web && node scripts/construir-servidor.mjs",
     "start": "node dist-servidor/servidor.mjs",
-    "preview": "vite preview",
+    "preview": "vite preview --mode web",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "simular": "tsx scripts/simular.ts",
-    "cartas": "tsx scripts/listar-cartas.ts"
+    "cartas": "tsx scripts/listar-cartas.ts",
+    "prompts": "tsx scripts/prompts-imagenes.ts",
+    "ilustraciones": "node scripts/preparar-ilustraciones.mjs"
   },
   "dependencies": {
     "ws": "^8.18.0"

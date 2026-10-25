@@ -187,6 +187,11 @@ export const CARTAS_MANIOBRAS: Carta[] = [
   ent({ nombre: 'Contraprogramación', clase: 'maniobra', disparo: 'alJugarAsesor', rareza: 'C', efectos: [E.robar(2)], escena: 'Dos televisores encendidos a la vez con distintos programas', icono: 'camara', arquetipos: ['maniobras'] }),
 ];
 
+/** Altas posteriores: van al final con el siguiente número libre, para no renumerar ninguna carta. */
+export const CARTAS_ALTAS: Carta[] = [
+  ind({ nombre: 'Fernando Savater', persona: 'fernando-savater', cargo: 'Filósofo y columnista de The Objective', audiencia: 2, rareza: 'I', mitin: [{ e: 'mirarMazo', n: 3, quien: 'yo', tomar: {} }], arquetipos: ['control'], escena: 'Un escritorio lleno de libros de filosofía con unos prismáticos de hipódromo encima', icono: 'libro' }),
+];
+
 export const CARTAS_PLATO_Y_ENTRENADORES: Carta[] = [
-  ...CARTAS_TERTULIANOS, ...CARTAS_ASESORES, ...CARTAS_RECURSOS, ...CARTAS_HERRAMIENTAS, ...CARTAS_ESCENARIOS, ...CARTAS_NOTICIAS, ...CARTAS_MANIOBRAS,
+  ...CARTAS_TERTULIANOS, ...CARTAS_ASESORES, ...CARTAS_RECURSOS, ...CARTAS_HERRAMIENTAS, ...CARTAS_ESCENARIOS, ...CARTAS_NOTICIAS, ...CARTAS_MANIOBRAS, ...CARTAS_ALTAS,
 ];

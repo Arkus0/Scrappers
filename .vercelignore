@@ -1,0 +1,4 @@
+# Vercel solo publica el cliente (dist/); el servidor del modo online se despliega aparte (Railway)
+dist
+dist-servidor
+capturas

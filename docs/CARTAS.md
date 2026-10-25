@@ -1,6 +1,6 @@
 # Listado de cartas
 
-305 cartas (178 personas reales, 222 con versión Shiny). Generado con `npm run cartas -- --md`.
+306 cartas (179 personas reales, 223 con versión Shiny). Generado con `npm run cartas -- --md`.
 
 
 ## Colección Básica
@@ -297,6 +297,7 @@
 | N-243 | Sondeo propio | Maniobra | ◆ |  | Cuando derriben a uno de tus políticos: roba 2 cartas. |
 | N-244 | Golpe de efecto | Maniobra | ◆◆ |  | Cuando derriben a uno de tus políticos: cura 30 a cada uno de tus políticos. |
 | N-245 | Contraprogramación | Maniobra | ◆ |  | Cuando el rival juegue un Asesor: roba 2 cartas. |
+| N-246 | Fernando Savater<br><small>Filósofo y columnista de The Objective</small> | Tertuliano | ◆◆ | Audiencia 2 · independiente | Al entrar: Mira las 3 primeras cartas de tu mazo y quédate un carta. |
 
 ## Secretas
 

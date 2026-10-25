@@ -187,6 +187,7 @@ reg('inaki-gabilondo', { nombre: "Iñaki Gabilondo", ambito: 'periodista', cargo
 reg('susanna-griso', { nombre: "Susanna Griso", ambito: 'periodista', cargo: "Presentadora de Espejo Público", fuentes: [W("Susanna Griso"), "Trayectoria pública en medios de comunicación"] });
 reg('lucia-mendez', { nombre: "Lucía Méndez", ambito: 'periodista', cargo: "Periodista de El Mundo", fuentes: [W("Lucía Méndez"), "Trayectoria pública en medios de comunicación"] });
 reg('pepa-bueno', { nombre: "Pepa Bueno", ambito: 'periodista', cargo: "Periodista", fuentes: [W("Pepa Bueno"), "Trayectoria pública en medios de comunicación"] });
+reg('fernando-savater', { nombre: "Fernando Savater", ambito: 'periodista', cargo: "Filósofo y columnista de The Objective", fuentes: [W("Fernando Savater"), "https://theobjective.com/cultura/2025-11-11/savater-presentacion-libro-mas-menos/"] });
 reg('inaki-lopez', { nombre: "Iñaki López", ambito: 'periodista', cargo: "Presentador de laSexta Xplica", fuentes: [W("Iñaki López"), "Trayectoria pública en medios de comunicación"] });
 reg('ivan-redondo', { nombre: "Iván Redondo", ambito: 'asesor', cargo: "Exjefe de gabinete de Pedro Sánchez (2018-2021)", fuentes: [W("Iván Redondo")] });
 reg('miguel-angel-rodriguez', { nombre: "Miguel Ángel Rodríguez", ambito: 'asesor', cargo: "Jefe de gabinete de Isabel Díaz Ayuso", fuentes: [W("Miguel Ángel Rodríguez")] });

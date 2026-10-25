@@ -5,4 +5,5 @@ dist-servidor
 .DS_Store
 capturas/
 src/assets/web/
+.vercel
 .env

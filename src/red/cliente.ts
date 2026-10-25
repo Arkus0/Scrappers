@@ -6,13 +6,23 @@ import { VERSION_JUEGO, type MsgCliente, type MsgServidor } from './protocolo';
 const CLAVE_TOKEN = '176tcg-token-online';
 const CLAVE_URL = '176tcg-url-servidor';
 
+/** Servidor del modo online fijado al compilar (en Vercel: variable de entorno VITE_SERVIDOR). */
+export const SERVIDOR_CONFIGURADO: string | null = import.meta.env.VITE_SERVIDOR || null;
+
+/**
+ * Dónde está el servidor online: el configurado al compilar; si no, el último que se usó; si no, el mismo
+ * dominio que sirve la página (así funciona tal cual en Railway, que sirve el juego y el WebSocket juntos).
+ */
 export function urlPorDefecto(): string | null {
+  if (SERVIDOR_CONFIGURADO) return SERVIDOR_CONFIGURADO;
+  try {
+    const guardada = localStorage.getItem(CLAVE_URL);
+    if (guardada) return guardada;
+  } catch { /* sin almacenamiento */ }
   if (typeof location !== 'undefined' && (location.protocol === 'http:' || location.protocol === 'https:')) {
     return `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`;
   }
-  const env = (import.meta as { env?: Record<string, string> }).env?.VITE_SERVIDOR;
-  if (env) return env;
-  try { return localStorage.getItem(CLAVE_URL); } catch { return null; }
+  return null;
 }
 
 export function guardarUrl(u: string) {
