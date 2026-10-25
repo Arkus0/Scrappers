@@ -35,6 +35,7 @@ export type MsgServidor =
   | { t: 'sala'; codigo: string }
   | { t: 'buscando'; segundos: number }
   | { t: 'emparejado'; asiento: Jug; rival: string; codigo: string; contraIA?: boolean }
+  /** plazo: milisegundos que quedan para decidir (null si no corre el reloj) */
   | { t: 'vista'; seq: number; vista: Vista; plazo: number | null }
   | { t: 'emote'; de: Jug; id: string }
   | { t: 'rivalDesconectado'; segundos: number }

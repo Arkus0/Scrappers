@@ -26,11 +26,14 @@ interface Props {
   onFin: (r: ResultadoPartida) => void;
   onSalir: () => void;
   textoFin?: (r: ResultadoPartida) => React.ReactNode;
+  /** se pide confirmación antes de salir de una partida sin terminar */
+  avisoAbandono?: string;
 }
 
 const RETRASO_IA = 520;
 
-export function PartidaLocal({ config, estadoInicial, onGuardar, onFin, onSalir, textoFin }: Props) {
+export function PartidaLocal({ config, estadoInicial, onGuardar, onFin, onSalir, textoFin, avisoAbandono }: Props) {
+  const [confirmar, setConfirmar] = useState(false);
   const [e, setE] = useState<Partida>(() => estadoInicial ?? crearPartida(config.semilla ?? ((Math.random() * 2 ** 31) | 0), [
     { nombre: config.nombres[0], cartas: config.mazos[0].cartas, tipos: config.mazos[0].tipos },
     { nombre: config.nombres[1], cartas: config.mazos[1].cartas, tipos: config.mazos[1].tipos },
@@ -90,7 +93,7 @@ export function PartidaLocal({ config, estadoInicial, onGuardar, onFin, onSalir,
   const humanoDecide = !!e.pendiente && e.pendiente.tipo !== 'espera' && esHumano(e.pendiente.jugador as Jug) && e.pendiente.jugador === mira;
   return (
     <>
-      <Tablero vista={vista} puedeActuar={humanoDecide && cortina === null} onResponder={aplicar} onSalir={onSalir}
+      <Tablero vista={vista} puedeActuar={humanoDecide && cortina === null} onResponder={aplicar} onSalir={() => (e.ganador ? onSalir() : setConfirmar(true))}
         esperaTxt={!humanoDecide && config.modo === 'ia' ? `${e.jugadores[decide].nombre} está pensando…` : undefined} />
       {cortina !== null && !e.ganador && (
         <div className="cortina" role="dialog" aria-label="Cambio de jugador">
@@ -102,6 +105,18 @@ export function PartidaLocal({ config, estadoInicial, onGuardar, onFin, onSalir,
         </div>
       )}
       {resultado && <FinPartida r={resultado} onSalir={onSalir} extra={textoFin?.(resultado)} />}
+      {confirmar && !e.ganador && (
+        <div className="velo" onClick={() => setConfirmar(false)}>
+          <div className="modal" role="dialog" aria-label="Salir de la partida" onClick={(ev) => ev.stopPropagation()}>
+            <h2>¿Salir de la partida?</h2>
+            {avisoAbandono && <p className="serif">{avisoAbandono}</p>}
+            <div className="fila-botones">
+              <button className="boton" type="button" onClick={() => setConfirmar(false)}>Seguir jugando</button>
+              <button className="boton peligro" type="button" data-accion="confirmar-salir" onClick={onSalir}>Salir</button>
+            </div>
+          </div>
+        </div>
+      )}
       {error && <div className="toast" onClick={() => setError(null)}>Error: {error}</div>}
     </>
   );

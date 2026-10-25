@@ -254,6 +254,11 @@ export class Salas {
     this.difundir(s);
   }
 
+  /** Milisegundos que le quedan a quien decide (los relojes del cliente y del servidor no tienen por qué coincidir). */
+  private restante(s: Sala): number | null {
+    return s.plazoFin === null ? null : Math.max(0, s.plazoFin - Date.now());
+  }
+
   /** Manda a cada jugador su vista y arma el plazo de quien decide. */
   private difundir(s: Sala) {
     const e = s.partida!;
@@ -269,7 +274,7 @@ export class Salas {
     } else s.plazoFin = null;
     for (const j of [0, 1] as Jug[]) {
       const as = s.asientos[j];
-      if (as?.con) this.enviar(as.con, { t: 'vista', seq: s.seq, vista: vistaPara(e, j), plazo: s.plazoFin });
+      if (as?.con) this.enviar(as.con, { t: 'vista', seq: s.seq, vista: vistaPara(e, j), plazo: this.restante(s) });
     }
     if (e.ganador) this.finalizar(s);
   }
@@ -404,7 +409,7 @@ export class Salas {
     const rival = s.asientos[OTRO(j)]!;
     this.enviar(con, { t: 'emparejado', asiento: j, rival: rival.nombre, codigo: s.codigo, contraIA: !!rival.ia });
     this.enviar(rival.con, { t: 'rivalReconectado' });
-    if (s.partida) this.enviar(con, { t: 'vista', seq: s.seq, vista: vistaPara(s.partida, j), plazo: s.plazoFin });
+    if (s.partida) this.enviar(con, { t: 'vista', seq: s.seq, vista: vistaPara(s.partida, j), plazo: this.restante(s) });
     if (s.estado === 'terminada' && s.partida?.ganador) this.enviar(con, { t: 'fin', ganador: s.partida.ganador.jug, motivo: s.partida.ganador.motivo });
   }
 
