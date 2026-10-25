@@ -5,6 +5,7 @@ import { avanzarMisiones, revisarColeccion, type Recompensa } from '../../perfil
 import { HORAS_SOBRE_GRATIS, MAX_SOBRES_GRATIS, PRECIO_SOBRE, type Perfil } from '../../perfil/perfil';
 import { abrirSobre, puedeAbrir, SOBRES_GARANTIA, type CartaSobre, type Pago } from '../../perfil/sobres';
 import { Carta, RAREZA_NOMBRE, RAREZA_TXT } from '../Carta';
+import { sonido } from '../../audio/audio';
 import type { Cambiar } from '../usePerfil';
 import { Barra, Cabecera, formatoTiempo, ListaRecompensas } from './comun';
 import type { Destino } from '../App';
@@ -38,7 +39,21 @@ export function Sobres({ perfil: p, cambiar, ir }: { perfil: Perfil; cambiar: Ca
     }, 650);
   };
 
-  const girar = (i: number) => setVueltas((v) => new Set(v).add(i));
+  /** El sonido de la mejor carta que se descubre: Shiny, rara (CL o mejor) o normal. */
+  const sonar = (cs: CartaSobre[]) => {
+    if (cs.some((c) => c.shiny)) sonido('shiny');
+    else if (cs.some((c) => ['CL', 'E', 'S'].includes(carta(c.id).rareza))) sonido('rara');
+    else sonido('girar');
+  };
+  const girar = (i: number) => {
+    if (abiertas) sonar([abiertas[i]]);
+    setVueltas((v) => new Set(v).add(i));
+  };
+  const girarTodas = () => {
+    if (!abiertas) return;
+    sonar(abiertas.filter((_, i) => !vueltas.has(i)));
+    setVueltas(new Set(abiertas.map((_, i) => i)));
+  };
   const todas = abiertas !== null && vueltas.size === abiertas.length;
   const faltaGratis = p.sobres.gratis < MAX_SOBRES_GRATIS ? p.sobres.proximoGratis - ahora : null;
 
@@ -105,7 +120,7 @@ export function Sobres({ perfil: p, cambiar, ir }: { perfil: Perfil; cambiar: Ca
               })}
             </div>
             <div className="fila-botones centro">
-              {!todas && <button className="boton" type="button" data-accion="girar-todas" onClick={() => setVueltas(new Set(abiertas.map((_, i) => i)))}>Girar todas</button>}
+              {!todas && <button className="boton" type="button" data-accion="girar-todas" onClick={girarTodas}>Girar todas</button>}
               {todas && (
                 <>
                   <button className="boton principal" type="button" data-accion="otro-sobre" disabled={!puedeAbrir(p, 'gratis') && !puedeAbrir(p, 'fondos')} onClick={() => { setAbiertas(null); abrir(puedeAbrir(p, 'gratis') ? 'gratis' : 'fondos'); }}>

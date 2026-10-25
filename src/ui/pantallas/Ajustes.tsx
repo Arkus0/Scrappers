@@ -46,6 +46,14 @@ export function Ajustes({ perfil: p, cambiar, ir }: { perfil: Perfil; cambiar: C
               <option value="experto">Experto</option>
             </select>
           </label>
+          <label className="selector">
+            <span className="etiqueta">Música · {Math.round(p.ajustes.musica * 100)} %</span>
+            <input className="deslizador" type="range" min={0} max={1} step={0.05} value={p.ajustes.musica} onChange={(e) => cambiar((q) => { q.ajustes.musica = Number(e.target.value); })} />
+          </label>
+          <label className="selector">
+            <span className="etiqueta">Efectos de sonido · {Math.round(p.ajustes.efectos * 100)} %</span>
+            <input className="deslizador" type="range" min={0} max={1} step={0.05} value={p.ajustes.efectos} onChange={(e) => cambiar((q) => { q.ajustes.efectos = Number(e.target.value); })} />
+          </label>
           <label className="interruptor">
             <input type="checkbox" checked={p.ajustes.reducirMovimiento} onChange={(e) => cambiar((q) => { q.ajustes.reducirMovimiento = e.target.checked; })} />
             Reducir animaciones

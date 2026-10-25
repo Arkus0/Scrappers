@@ -7,6 +7,7 @@ import { aguanteMax, clave, costeRelevo, escanos, NOMBRES_CLIMA, pagable, polUid
 import type { AccionJuego, CartaTertuliano, Decision, EnJuego, Jug, Partida, Respuesta, Suceso, Uid, Vista } from '../../motor/tipos';
 import { OTRO } from '../../motor/tipos';
 import { Carta, Coste, Reverso, SelloTipo } from '../Carta';
+import { sonido } from '../../audio/audio';
 import { nombreEstado } from '../../datos/textos';
 
 interface Props {
@@ -38,7 +39,20 @@ export function Tablero({ vista: v, puedeActuar, onResponder, onSalir, esperaTxt
   useEffect(() => { setSel(null); setElegidas([]); }, [d]);
 
   const objetivos = miDecision?.tipo === 'objetivo' ? new Set(miDecision.opciones) : null;
-  const responder = (r: Respuesta) => { setSel(null); setElegidas([]); onResponder(r); };
+  const responder = (r: Respuesta) => {
+    setSel(null);
+    setElegidas([]);
+    if (r.tipo === 'accion' && r.accion.a !== 'pasar' && r.accion.a !== 'atacar') sonido('carta');
+    onResponder(r);
+  };
+  // aviso sonoro cuando empieza tu turno
+  const turnoAvisado = useRef(-1);
+  useEffect(() => {
+    if (miDecision?.tipo === 'accion' && turnoAvisado.current !== v.turno) {
+      turnoAvisado.current = v.turno;
+      sonido('turno');
+    }
+  }, [miDecision, v.turno]);
   const accionesDe = (uid: Uid) => acciones.filter((a) => ('carta' in a && a.carta === uid) || ('sobre' in a && a.sobre === uid && a.a !== 'ascender' && a.a !== 'herramienta') || (a.a === 'relevo' && a.a2 === uid));
   const jugables = useMemo(() => new Set(acciones.flatMap((a) => ('carta' in a ? [a.carta] : []))), [acciones]);
   const mesaActivable = useMemo(() => new Set(acciones.flatMap((a) => (a.a === 'voto' || a.a === 'carisma' ? [a.sobre] : a.a === 'relevo' ? [a.a2] : a.a === 'atacar' ? [v.jugadores[yo].tribuna!.uid] : []))), [acciones, v, yo]);
@@ -332,7 +346,11 @@ function Efectos({ v }: { v: Vista }) {
     const timers: number[] = [];
     let retraso = 0;
     const lanzar = (s: Suceso) => {
-      if (s.s === 'moneda') { setMoneda(s.cara); timers.push(window.setTimeout(() => setMoneda(null), 900)); }
+      if (s.s === 'moneda') { setMoneda(s.cara); sonido('moneda'); timers.push(window.setTimeout(() => setMoneda(null), 900)); }
+      if (s.s === 'dano') sonido('golpe');
+      if (s.s === 'cura') sonido('cura');
+      if (s.s === 'ko' || s.s === 'ruptura') sonido('ko');
+      if (s.s === 'maniobra') sonido('maniobra');
       if (s.s === 'dano' || s.s === 'cura') {
         const el = document.querySelector(`[data-uid="${s.uid}"]`);
         const r = el?.getBoundingClientRect();

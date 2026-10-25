@@ -1,6 +1,7 @@
 // Modo online: sala con código, emparejamiento rápido y la partida contra el servidor autoritativo.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Jug, Partida, Respuesta, Suceso, Vista } from '../../motor/tipos';
+import { tocarTema } from '../../audio/audio';
 import { ClienteOnline, urlPorDefecto, type EstadoConexion } from '../../red/cliente';
 import { EMOTES, LETRAS_CODIGO, type MsgServidor } from '../../red/protocolo';
 import { registrarPartida, type Recompensa } from '../../perfil/misiones';
@@ -114,6 +115,11 @@ export function Online({ perfil: p, cambiar, ir }: { perfil: Perfil; cambiar: Ca
     // solo al entrar: cambiar de servidor se hace con el botón
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // música: vestíbulo, partida y fanfarria final
+  const enPartida = fase.f === 'partida' && !!emp && !!vista;
+  const tema = !enPartida ? 'menu' : fin ? (fin.ganador === emp?.asiento ? 'victoria' : 'derrota') : 'combate';
+  useEffect(() => { tocarTema(tema); }, [tema]);
 
   useEffect(() => {
     if (!emote) return;

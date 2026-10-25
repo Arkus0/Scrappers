@@ -3,9 +3,11 @@ import { progresoColeccion, type Perfil } from '../../perfil/perfil';
 import { escanosDe, SEMANAS } from '../../perfil/campana';
 import { MISIONES } from '../../perfil/misiones';
 import { Barra, Recursos } from './comun';
+import type { Cambiar } from '../usePerfil';
 import type { Destino } from '../App';
 
-export function Inicio({ perfil: p, ir, persistente }: { perfil: Perfil; ir: (d: Destino) => void; persistente: boolean }) {
+export function Inicio({ perfil: p, ir, persistente, cambiar }: { perfil: Perfil; ir: (d: Destino) => void; persistente: boolean; cambiar: Cambiar }) {
+  const mudo = p.ajustes.musica === 0 && p.ajustes.efectos === 0;
   const col = progresoColeccion(p);
   const nuevo = p.inicial === null;
   const misionesPend = p.misiones.lista.filter((m) => !m.cobrada).length;
@@ -13,6 +15,10 @@ export function Inicio({ perfil: p, ir, persistente }: { perfil: Perfil; ir: (d:
   return (
     <main className="pantalla">
       <div className="pantalla-caja portada">
+        <button className="boton-icono boton-sonido" type="button" data-accion="sonido" aria-label={mudo ? 'Activar el sonido' : 'Silenciar'} title={mudo ? 'Activar el sonido' : 'Silenciar'}
+          onClick={() => cambiar((q) => { if (mudo) { q.ajustes.musica = 0.6; q.ajustes.efectos = 0.8; } else { q.ajustes.musica = 0; q.ajustes.efectos = 0; } })}>
+          {mudo ? '🔇' : '🔊'}
+        </button>
         <div className="portada-titulo">
           <h1 className="titulo-176">176</h1>
           <p className="subtitulo">¡Hazte con los 176!</p>

@@ -1,5 +1,7 @@
 // La aplicación: perfil, navegación entre pantallas y las partidas locales (rápida, a dos, campaña y tutorial).
 import { useCallback, useEffect, useState } from 'react';
+import { desbloquearAudio, sonido, tocarTema, volumenes } from '../audio/audio';
+import type { TemaId } from '../audio/temas';
 import { MAZOS_INICIALES } from '../datos/mazos-iniciales';
 import { mazoRival, resolverActo, type Acto } from '../perfil/campana';
 import { registrarPartida, type Recompensa } from '../perfil/misiones';
@@ -36,6 +38,7 @@ interface EnCurso {
 interface Desenlace {
   premios: Recompensa[];
   nota: string | null;
+  fanfarria: 'victoria' | 'derrota';
 }
 
 const ESPEJO = { rojo: 'azul', azul: 'rojo', magenta: 'verde', verde: 'magenta' } as const;
@@ -50,6 +53,30 @@ export function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('reducir-movimiento', perfil.ajustes.reducirMovimiento);
   }, [perfil.ajustes.reducirMovimiento]);
+
+  // ————————————————————————— música y sonido
+  useEffect(() => { volumenes(perfil.ajustes.musica, perfil.ajustes.efectos); }, [perfil.ajustes.musica, perfil.ajustes.efectos]);
+  useEffect(() => {
+    // el navegador solo deja sonar tras un gesto; los botones suenan con un clic suave
+    const gesto = () => desbloquearAudio();
+    const clic = (ev: MouseEvent) => { if ((ev.target as Element | null)?.closest?.('button.boton, button.chip, .pestanas button, .boton-icono')) sonido('clic'); };
+    window.addEventListener('pointerdown', gesto, true);
+    window.addEventListener('keydown', gesto, true);
+    document.addEventListener('click', clic, true);
+    return () => {
+      window.removeEventListener('pointerdown', gesto, true);
+      window.removeEventListener('keydown', gesto, true);
+      document.removeEventListener('click', clic, true);
+    };
+  }, []);
+  const c = perfil.campana;
+  const tema: TemaId | null | 'online' = partida
+    ? desenlace ? desenlace.fanfarria : 'combate'
+    : destino.p === 'online' ? 'online'
+      : destino.p === 'campana' ? (c?.terminada ? (c.terminada.investidura ? 'victoria' : 'derrota') : 'campana')
+        : destino.p === 'sobres' || destino.p === 'album' ? 'sobres' : 'menu';
+  // la pantalla online elige su propia música (vestíbulo o partida)
+  useEffect(() => { if (tema !== 'online') tocarTema(tema); }, [tema]);
 
   const jugar = (config: ConfigLocal, tipo: EnCurso['tipo'], volver: Destino, acto?: Acto) => {
     setDesenlace(null);
@@ -76,14 +103,15 @@ export function App() {
     if (partida.tipo === 'campana' && partida.acto) {
       const res = cambiar((q) => {
         const premios = registrarPartida(q, { modo: 'campana', ganador: r.ganador, yo: 0, partida: e });
-        if (!q.campana) return { premios, nota: null };
-        return { premios, nota: resolverActo(q.campana, gano) };
+        const fanfarria = gano ? 'victoria' as const : 'derrota' as const;
+        if (!q.campana) return { premios, nota: null, fanfarria };
+        return { premios, nota: resolverActo(q.campana, gano), fanfarria };
       });
       setDesenlace(res);
       return;
     }
     const premios = cambiar((q) => registrarPartida(q, { modo: partida.tipo === 'dos' ? 'dos' : 'ia', ganador: r.ganador, yo: 0, partida: e }));
-    setDesenlace({ premios, nota: null });
+    setDesenlace({ premios, nota: null, fanfarria: gano || (partida.tipo === 'dos' && r.ganador !== null) ? 'victoria' : 'derrota' });
   }, [partida, cambiar]);
 
   const salirDePartida = () => {
@@ -124,6 +152,6 @@ export function App() {
     case 'ajustes': return <Ajustes {...comunes} />;
     case 'ayuda': return <Ayuda ir={ir} />;
     case 'campana': return <Campana {...comunes} onJugar={jugarActo} />;
-    default: return <Inicio perfil={perfil} ir={ir} persistente={persistente} />;
+    default: return <Inicio perfil={perfil} ir={ir} persistente={persistente} cambiar={cambiar} />;
   }
 }

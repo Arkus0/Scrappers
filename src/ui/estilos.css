@@ -533,3 +533,8 @@ textarea.campo { min-height: 64px; }
 .notas { padding-left: 18px; display: grid; gap: 6px; }
 .fin-campana { display: grid; gap: 14px; justify-items: center; }
 .titulo-fin { font-size: 38px; margin: 0; font-variation-settings: 'wdth' 90; }
+
+/* sonido */
+.portada { position: relative; }
+.boton-sonido { position: absolute; top: 0; right: 0; z-index: 2; }
+.deslizador { width: 100%; accent-color: var(--oro); }

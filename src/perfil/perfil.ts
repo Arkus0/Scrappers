@@ -54,7 +54,7 @@ export interface Perfil {
   logros: Record<string, number>;
   stats: Stats;
   campana: EstadoCampana | null;
-  ajustes: { reducirMovimiento: boolean; nivel: Nivel; urlServidor: string };
+  ajustes: { reducirMovimiento: boolean; nivel: Nivel; urlServidor: string; musica: number; efectos: number };
   tutorialVisto: boolean;
 }
 
@@ -72,7 +72,7 @@ export function perfilNuevo(ahora = Date.now()): Perfil {
     sobres: { gratis: MAX_SOBRES_GRATIS, proximoGratis: ahora + HORAS_SOBRE_GRATIS * 3600_000, abiertos: 0, sinCL: 0, rng: (ahora % 2147483647) | 1 },
     mazos: [], mazoActivo: null, tematicos: [], misiones: { dia: '', lista: [] }, logros: {},
     stats: { partidas: 0, victorias: 0, derrotas: 0, empates: 0, derribos: 0, dano: 0, shiniesAbiertas: 0, sobresAbiertos: 0, online: 0, victoriasOnline: 0, investiduras: 0 },
-    campana: null, ajustes: { reducirMovimiento: false, nivel: 'normal', urlServidor: '' }, tutorialVisto: false,
+    campana: null, ajustes: { reducirMovimiento: false, nivel: 'normal', urlServidor: '', musica: 0.6, efectos: 0.8 }, tutorialVisto: false,
   };
 }
 
