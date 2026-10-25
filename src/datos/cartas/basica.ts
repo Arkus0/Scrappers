@@ -73,13 +73,13 @@ export const CARTAS_BASICA: Carta[] = [
     acciones: [{ coste: 'X', dano: 10, efectos: [E.cura(20, 'tribunaPropia')] }, { coste: 'XI', dano: 30, efectos: [E.si({ c: 'defensorDanado' }, [E.mas(20)])] }],
   },
     { num: 23, nombre: 'Mónica García', persona: 'monica-garcia', cargo: 'Ministra de Sanidad', escena: 'Un fonendoscopio sobre un atril parlamentario junto a un vaso de agua', icono: 'fonendo', acciones: ['Primeros auxilios', 'Diagnóstico'] },
-    { num: 24, nombre: 'Pepa Millán', persona: 'pepa-millan', cargo: 'Portavoz de Vox en el Congreso', escena: 'Un cuaderno de notas abierto en un escaño con frases subrayadas sin texto legible', icono: 'cuaderno', acciones: ['Apunte', 'Réplica'] }),
+    { num: 24, nombre: 'Pepa Millán', persona: 'pepa-millan', cargo: 'Diputada de Vox', escena: 'Un cuaderno de notas abierto en un escaño con frases subrayadas sin texto legible', icono: 'cuaderno', acciones: ['Apunte', 'Réplica'] }),
   ...espejo(B, {
     eje: 'MV', aguante: 70, relevo: 1, rareza: 'C', arquetipos: ['control'],
     acciones: [{ coste: 'XI', dano: 30, efectos: [E.moneda([E.estado('desnortado')])] }],
   },
     { num: 25, nombre: 'Ernest Urtasun', persona: 'ernest-urtasun', cargo: 'Ministro de Cultura', escena: 'Un escenario de teatro vacío con un foco magenta y un telón a medio subir', icono: 'teatro', acciones: ['Golpe de efecto'] },
-    { num: 26, nombre: 'Jorge Buxadé', persona: 'jorge-buxade', cargo: 'Eurodiputado de Vox', escena: 'Un pasillo largo de un parlamento europeo con banderas lisas y una cartera verde', icono: 'maletin', acciones: ['Desde Bruselas'] }),
+    { num: 26, nombre: 'Jorge Buxadé', persona: 'jorge-buxade', cargo: 'Dirigente de Vox', escena: 'Un pasillo largo de un parlamento europeo con banderas lisas y una cartera verde', icono: 'maletin', acciones: ['Desde Bruselas'] }),
 
   // ——— entrenadores básicos (neutrales)
   entrenador(B, { num: 27, nombre: 'Encuesta interna', clase: 'recurso', rareza: 'C', efectos: [{ e: 'mirarMazo', n: 4, quien: 'yo', tomar: { clase: ['politico'] } }], requisito: { c: 'mazoPropioMin', n: 1 }, escena: 'Un gráfico de barras hecho con papeles de colores sobre una mesa de cocina, de noche', icono: 'grafico' }),

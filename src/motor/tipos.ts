@@ -137,6 +137,7 @@ export type Efecto =
   | { e: 'descartarHerramienta'; a: Sel }
   | { e: 'quitarEscenario' }
   | { e: 'apoyo'; n: number }
+  | { e: 'apoyoPorAmbar' }
   | { e: 'quitarApoyos'; n: number }
   | { e: 'investidura' }
   | { e: 'clima'; n: number }

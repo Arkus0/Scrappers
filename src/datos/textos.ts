@@ -113,16 +113,28 @@ export function condTxt(c: Cond): string {
 
 const n10 = (n: number) => `${n}`;
 
+/** «cada político en juego», «la tribuna rival» y, si hay filtro, «… que sea rojo». */
+function selTxt(a: Sel, f?: FiltroPol): string {
+  if (!f) return SEL[a];
+  const partes: string[] = [];
+  if (f.tipo) partes.push(lista(f.tipo.map((t) => tipoTxt(t))));
+  if (f.bloque) partes.push(`del bloque ${lista(f.bloque)}`);
+  if (f.partido) partes.push(`de ${lista(f.partido)}`);
+  if (f.fase) partes.push(lista(f.fase.map((x) => (x === 'basico' ? 'Básico' : x === 'fase1' ? 'de Fase 1' : 'de Fase 2'))));
+  if (f.cl) partes.push('Cabeza de lista');
+  return `${SEL[a]} (solo si es ${partes.join(' y ')})`;
+}
+
 export function efectoTxt(ef: Efecto): string {
   switch (ef.e) {
     case 'masDano': return `este ataque hace ${n10(ef.n)} más`;
     case 'masDanoPor': return `este ataque hace ${ef.n} más por cada ${CONTADOR[ef.por]}${ef.max ? ` (máx. ${ef.max})` : ''}`;
     case 'fallar': return 'el ataque no hace nada';
-    case 'dano': return `${ef.n} de daño a ${SEL[ef.a]}`;
-    case 'bulo': return `coloca ${ef.n} de desgaste (bulo) en ${SEL[ef.a]}`;
+    case 'dano': return `${ef.n} de daño a ${selTxt(ef.a, ef.filtro)}`;
+    case 'bulo': return `coloca ${ef.n} de desgaste (bulo) en ${selTxt(ef.a, ef.filtro)}`;
     case 'autodano': return `este político recibe ${ef.n} de daño`;
-    case 'curar': return ef.n === 'todo' ? `cura todo el desgaste de ${SEL[ef.a]}` : `cura ${ef.n} a ${SEL[ef.a]}`;
-    case 'estado': return `${SEL[ef.a]} queda ${ESTADO[ef.estado]}`;
+    case 'curar': return ef.n === 'todo' ? `cura todo el desgaste de ${selTxt(ef.a, ef.filtro)}` : `cura ${ef.n} a ${selTxt(ef.a, ef.filtro)}`;
+    case 'estado': return `${selTxt(ef.a, ef.filtro)} queda ${ESTADO[ef.estado]}`;
     case 'quitarEstados': return `${SEL[ef.a]} se libra de los estados`;
     case 'monedas': return `tira ${ef.n === 'votosFuente' ? 'una moneda por cada voto de este político' : `${ef.n} monedas`}: por cada cara, ${efectosTxt(ef.porCara, false)}`;
     case 'hastaCruz': return `tira monedas hasta sacar cruz: por cada cara, ${efectosTxt(ef.porCara, false)}`;
@@ -139,7 +151,7 @@ export function efectoTxt(ef: Efecto): string {
     case 'descartarMazo': return ef.quien === 'rival' ? `el rival pierde las ${ef.n} primeras cartas de su mazo` : `pierdes las ${ef.n} primeras cartas de tu mazo`;
     case 'verMano': return 've la mano del rival';
     case 'recuperar': return `recupera del descarte ${ef.n === 1 ? 'un' : `hasta ${ef.n}`} ${filtroCartaTxt(ef.filtro)} ${ef.destino === 'mano' ? 'a tu mano' : 'y barájalo en tu mazo'}`;
-    case 'descartarVoto': return `${SEL[ef.a]} pierde ${ef.n === 'todos' ? 'todos sus votos' : `${ef.n} voto${ef.n === 1 ? '' : 's'}`}`;
+    case 'descartarVoto': return `${selTxt(ef.a, ef.filtro)} pierde ${ef.n === 'todos' ? 'todos sus votos' : `${ef.n} voto${ef.n === 1 ? '' : 's'}`}`;
     case 'adjuntarVoto': return `da ${ef.n} voto${ef.n === 1 ? '' : 's'} ${ef.tipo === 'zona' ? 'de tu zona de voto' : tipoTxt(ef.tipo, ef.n !== 1)} a ${SEL[ef.a]}`;
     case 'moverVoto': return `mueve ${ef.n} voto${ef.n === 1 ? '' : 's'} ${ef.desde === 'fuente' ? 'de este político' : 'de tu banquillo'} a ${SEL[ef.a]}`;
     case 'cambiarRival': return `cambia la tribuna rival por un político de su banquillo (${ef.elige === 'yo' ? 'lo eliges tú' : 'lo elige el rival'})`;
@@ -155,6 +167,7 @@ export function efectoTxt(ef: Efecto): string {
     case 'descartarHerramienta': return `${SEL[ef.a]} pierde su Herramienta`;
     case 'quitarEscenario': return 'retira el Escenario en juego';
     case 'apoyo': return `suma ${ef.n} Apoyo${ef.n === 1 ? '' : 's'} de su partido`;
+    case 'apoyoPorAmbar': return 'cada uno de tus políticos ámbar en juego te da 1 Apoyo de su partido';
     case 'quitarApoyos': return `el rival pierde ${ef.n} Apoyo${ef.n === 1 ? '' : 's'}`;
     case 'investidura': return 'con 6 Apoyos de 4 partidos distintos, ganas la partida';
     case 'clima': return `el Clima ${ef.n > 0 ? 'mejora' : 'empeora'} ${Math.abs(ef.n)}`;

@@ -696,7 +696,7 @@ function tareaKos(e: Partida): boolean {
     const pts = c.cl ? 2 : 1;
     log(e, `¡${nombre(e, k.ej.uid)} cae! ${quien(e, OTRO(k.jug))} gana ${pts === 2 ? '118' : '59'} escaños`, OTRO(k.jug));
     suceso(e, { s: 'ko', uid: k.ej.uid, carta: idDe(e, k.ej.uid), jug: k.jug, puntos: pts });
-    if (c.carisma?.disparo === 'legado' && c.carisma.efectos) tareas.push({ t: 'efectos', lista: c.carisma.efectos, i: 0, ctx: { yo: k.jug, origen: 'legado' } });
+    if (c.carisma?.disparo === 'legado' && c.carisma.efectos) tareas.push({ t: 'efectos', lista: c.carisma.efectos, i: 0, ctx: { yo: k.jug, origen: 'legado', carta: k.ej.uid } });
     tareas.push({ t: 'maniobras', disparo: 'alDerribo', jug: k.jug, ctx: { yo: OTRO(k.jug), origen: 'ataque' } });
     if (e.ataque && e.ataque.viral && e.ataque.defensor === k.ej.uid && k.jug !== e.ataque.jug) {
       robar(e, e.ataque.jug, 1);
@@ -1165,9 +1165,23 @@ function aplicarEfecto(e: Partida, t: Extract<Tarea, { t: 'efecto' }>, r: Respue
       }
       return true;
     }
+    case 'apoyoPorAmbar': {
+      // cada político ámbar propio en juego aporta el apoyo de su partido
+      const p = e.jugadores[yo];
+      for (const ej of enJuego(e, yo)) {
+        const c = polUid(e, ej.uid);
+        if (!tiposDe(c).includes('ambar') || p.apoyos.length >= 10) continue;
+        p.apoyos.push(c.partido);
+        suceso(e, { s: 'apoyo', jug: yo, partido: c.partido });
+      }
+      log(e, `${quien(e, yo)} hace una ronda de contactos (${p.apoyos.length} apoyos)`, yo);
+      return true;
+    }
     case 'apoyo': {
       const f = ctx.fuente !== undefined ? ubicar(e, ctx.fuente) : null;
-      const partido = f ? polUid(e, f.ej.uid).partido : 'INDEP';
+      // en un Legado el político ya no está en juego: cuenta su carta
+      const cartaPol = !f && ctx.carta !== undefined && conocida(e, ctx.carta) && esPolitico(cartaUid(e, ctx.carta)) ? polUid(e, ctx.carta) : null;
+      const partido = f ? polUid(e, f.ej.uid).partido : cartaPol ? cartaPol.partido : 'INDEP';
       const p = e.jugadores[yo];
       for (let i = 0; i < ef.n && p.apoyos.length < 10; i++) p.apoyos.push(partido);
       log(e, `${quien(e, yo)} suma el apoyo de ${PARTIDOS[partido].siglas} (${p.apoyos.length} apoyos)`, yo);
