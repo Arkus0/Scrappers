@@ -140,7 +140,7 @@ export type Efecto =
   | { e: 'apoyoPorAmbar' }
   | { e: 'quitarApoyos'; n: number }
   | { e: 'investidura' }
-  | { e: 'clima'; n: number }
+  | { e: 'clima'; n: number; minimo?: number }
   | { e: 'fijarClima'; n: number }
   | { e: 'audiencia'; n: number; quien: 'yo' | 'rival' }
   | { e: 'expulsarTertuliano' }

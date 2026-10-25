@@ -170,7 +170,7 @@ export function efectoTxt(ef: Efecto): string {
     case 'apoyoPorAmbar': return 'cada uno de tus políticos ámbar en juego te da 1 Apoyo de su partido';
     case 'quitarApoyos': return `el rival pierde ${ef.n} Apoyo${ef.n === 1 ? '' : 's'}`;
     case 'investidura': return 'con 6 Apoyos de 4 partidos distintos, ganas la partida';
-    case 'clima': return `el Clima ${ef.n > 0 ? 'mejora' : 'empeora'} ${Math.abs(ef.n)}`;
+    case 'clima': return `el Clima ${ef.n > 0 ? 'mejora' : 'empeora'} ${Math.abs(ef.n)}${ef.n < 0 && (ef.minimo ?? 1) >= 2 ? ' (sin bajar de Guerra sucia)' : ef.n < 0 ? ' (¡puede provocar una Ruptura!)' : ''}`;
     case 'fijarClima': return `el Clima pasa a ${ef.n}`;
     case 'audiencia': return `${ef.quien === 'yo' ? 'tus tertulianos' : 'los tertulianos rivales'} ${ef.n > 0 ? 'ganan' : 'pierden'} ${Math.abs(ef.n)} de Audiencia`;
     case 'expulsarTertuliano': return 'echa del plató a un tertuliano rival';

@@ -260,7 +260,8 @@ export const E = {
   hastaCruz: (porCara: Efecto[]): Efecto => ({ e: 'hastaCruz', porCara }),
   si: (cond: Cond, entonces: Efecto[], sino?: Efecto[]): Efecto => ({ e: 'si', cond, entonces, sino }),
   robar: (n: number, quien?: 'yo' | 'rival' | 'ambos'): Efecto => ({ e: 'robar', n, quien }),
-  clima: (n: number): Efecto => ({ e: 'clima', n }),
+  /** el Clima empeora sin pasar de Guerra sucia (2); para arriesgar una Ruptura, minimo 1 */
+  clima: (n: number, minimo = 2): Efecto => ({ e: 'clima', n, minimo: n < 0 ? minimo : undefined }),
   apoyo: (n = 1): Efecto => ({ e: 'apoyo', n }),
   voto: (tipo: Tipo | 'zona', a: Extract<Efecto, { e: 'adjuntarVoto' }>['a'] = 'fuente', n = 1): Efecto => ({ e: 'adjuntarVoto', tipo, n, a }),
   quitarVoto: (n: number | 'todos' = 1, a: Extract<Efecto, { e: 'descartarVoto' }>['a'] = 'defensor'): Efecto => ({ e: 'descartarVoto', n, a }),

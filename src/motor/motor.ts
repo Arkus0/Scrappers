@@ -113,10 +113,10 @@ export function sumarPuntos(e: Partida, j: Jug, n: number) {
   comprobarVictoria(e);
 }
 
-function cambiarClima(e: Partida, n: number, culpable: Jug) {
+function cambiarClima(e: Partida, n: number, culpable: Jug, minimo = 1) {
   if (!n || e.ganador) return;
   const antes = e.clima;
-  const nuevo = Math.max(1, Math.min(5, e.clima + n));
+  const nuevo = Math.max(Math.min(minimo, antes), Math.min(5, e.clima + n));
   if (nuevo === antes) return;
   e.clima = nuevo;
   log(e, `Clima de campaña: ${NOMBRES_CLIMA[antes]} → ${NOMBRES_CLIMA[nuevo]}`, culpable);
@@ -1202,7 +1202,7 @@ function aplicarEfecto(e: Partida, t: Extract<Tarea, { t: 'efecto' }>, r: Respue
       } else log(e, 'La votación de investidura fracasa: faltan apoyos', yo);
       return true;
     }
-    case 'clima': cambiarClima(e, ef.n, yo); return true;
+    case 'clima': cambiarClima(e, ef.n, yo, ef.minimo ?? 1); return true;
     case 'fijarClima': cambiarClima(e, ef.n - e.clima, yo); return true;
     case 'audiencia': {
       const p = e.jugadores[ef.quien === 'yo' ? yo : rv];

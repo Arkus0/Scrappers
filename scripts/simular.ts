@@ -34,6 +34,8 @@ export function jugar(a: DefMazo, b: DefMazo, semilla: number, niveles: [Nivel |
 
 const t0 = Date.now();
 const res: string[] = [];
+const total: Record<string, [number, number]> = {};
+const sumar = (m: string, g: boolean) => { const t = (total[m] ??= [0, 0]); t[1]++; if (g) t[0]++; };
 let primero = 0, totales = 0, turnos = 0;
 const motivos: Record<string, number> = {};
 for (const ia of ids) {
@@ -55,10 +57,16 @@ for (const ia of ids) {
       if (e.ganador.jug === e.primero) primero++;
       const ganaA = (e.ganador.jug === 0) !== cambia;
       if (ganaA) ga++; else gb++;
+      sumar(ia, ganaA);
+      sumar(ib, !ganaA);
     }
     res.push(`${(contra ? `${ia}(${nivel}) vs ${ia}(${contra})` : `${ia} vs ${ib}`).padEnd(34)} ${String(ga).padStart(4)} - ${String(gb).padEnd(4)} (${((100 * ga) / Math.max(1, ga + gb)).toFixed(0)} %)  empates ${emp}`);
   }
 }
 console.log(res.join('\n'));
+if (Object.keys(total).length > 2) {
+  console.log('\nVictorias por mazo:');
+  for (const [m, [g, t]] of Object.entries(total).sort((a, b) => b[1][0] / b[1][1] - a[1][0] / a[1][1])) console.log(`  ${m.padEnd(16)} ${((100 * g) / t).toFixed(0).padStart(3)} %  (${g}/${t})`);
+}
 console.log(`\nGana quien empieza: ${((100 * primero) / totales).toFixed(0)} % · turnos medios ${(turnos / totales).toFixed(1)} · ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 console.log(motivos);

@@ -27,8 +27,8 @@ export const CARTAS_ROJO_AZUL: Carta[] = [
     { nombre: 'María Jesús Montero', persona: 'mj-montero', cargo: 'Líder del PSOE de Andalucía', escena: 'Una calculadora antigua sobre una pila de presupuestos encuadernados en rojo', icono: 'grafico', acciones: ['Cuadrar las cuentas', 'Presupuestos'] },
     { nombre: 'Isabel Díaz Ayuso', persona: 'ayuso', cargo: 'Diputada en la Asamblea de Madrid', frase: 'Comunismo o libertad.', escena: 'Una terraza de bar madrileña al atardecer con dos cañas sobre la mesa y la ciudad al fondo', icono: 'cana', acciones: ['Libertad', 'Efecto Ayuso'] }),
   ...par({
-    fase: 'fase1', rareza: 'R', aguante: 110, relevo: 2, claves: ['disciplina'], arquetipos: ['equipo'],
-    acciones: [{ coste: 'XXI', dano: 60, efectos: [E.masPor(10, 'aliadosPartido', 3)] }],
+    fase: 'fase1', rareza: 'R', aguante: 100, relevo: 2, claves: ['disciplina'], arquetipos: ['equipo'],
+    acciones: [{ coste: 'XXI', dano: 50, efectos: [E.masPor(10, 'aliadosPartido', 3)] }],
     carisma: { disparo: 'pasiva', pasivas: [{ p: 'dano', n: 10, ambito: 'aliados', filtro: { partido: ['PSOE'] } }] },
   },
     { nombre: 'María Jesús Montero · Vicepresidenta', persona: 'mj-montero', cargo: 'Vicepresidenta primera (2023-2026)', de: 'María Jesús Montero', escena: 'Una mesa de Consejo de Ministros vacía con una carpeta roja abierta y gafas encima', icono: 'carpeta', acciones: ['Hacienda somos todos'], carisma: 'Cuentas claras' },
@@ -42,7 +42,7 @@ export const CARTAS_ROJO_AZUL: Carta[] = [
     { nombre: 'Félix Bolaños', persona: 'felix-bolanos', cargo: 'Ministro de la Presidencia y Justicia', escena: 'Un llavero con decenas de llaves sobre una mesa de negociación', icono: 'llave', acciones: ['Negociación permanente'], carisma: 'Ministro de todo' },
     { nombre: 'Elías Bendodo', persona: 'elias-bendodo', cargo: 'Dirigente nacional del PP', escena: 'Un organigrama de corcho con fichas azules y un cordel uniendo despachos', icono: 'red', acciones: ['Coordinación'], carisma: 'Fontanería de partido' }),
   ...par({
-    rareza: 'C', aguante: 80, relevo: 2, arquetipos: ['tregua'],
+    rareza: 'C', aguante: 80, relevo: 2, arquetipos: ['tregua', 'mill'],
     acciones: [{ coste: 'XXI', dano: 50 }],
     carisma: { disparo: 'pasiva', pasivas: [{ p: 'defensa', n: 10, ambito: 'este' }] },
   },
@@ -68,8 +68,8 @@ export const CARTAS_ROJO_AZUL: Carta[] = [
     { nombre: 'Diana Morant', persona: 'diana-morant', cargo: 'Ministra de Ciencia y líder del PSPV', escena: 'Un matraz de laboratorio con un líquido rojo burbujeante y un naranjo al fondo', icono: 'gota', acciones: ['I+D'] },
     { nombre: 'María José Catalá', persona: 'mj-catala', cargo: 'Alcaldesa de Valencia', escena: 'Una barraca valenciana junto a una noria de agua y arrozales al sol', icono: 'casa', acciones: ['Cap i casal'] }),
   ...par({
-    rareza: 'C', aguante: 80, relevo: 2, arquetipos: ['control'],
-    acciones: [{ coste: 'XXI', dano: 40, efectos: [E.quitarVoto(1)] }],
+    rareza: 'C', aguante: 80, relevo: 2, claves: ['sinFondos'], arquetipos: ['mill'],
+    acciones: [{ coste: 'XXI', dano: 40, efectos: [{ e: 'descartarMazo', n: 1, quien: 'rival' }] }],
   },
     { nombre: 'Luis Planas', persona: 'luis-planas', cargo: 'Ministro de Agricultura', escena: 'Un campo de trigo con un tractor rojo parado bajo un cielo de tormenta', icono: 'trigo', acciones: ['Política agraria'] },
     { nombre: 'Fernando López Miras', persona: 'lopez-miras', cargo: 'Presidente de la Región de Murcia', escena: 'Una acequia seca con una compuerta azul abierta y huertas al fondo', icono: 'gota', acciones: ['Agua para todos'] }),
@@ -108,13 +108,13 @@ export const CARTAS_ROJO_AZUL: Carta[] = [
     { nombre: 'Elma Saiz', persona: 'elma-saiz', cargo: 'Ministra de Inclusión y Seguridad Social', escena: 'Una cadena de manos sujetando una red bajo un trapecio de circo', icono: 'mano', acciones: ['Ingreso mínimo'], carisma: 'Red de seguridad' },
     { nombre: 'María Guardiola', persona: 'maria-guardiola', cargo: 'Presidenta de la Junta de Extremadura', escena: 'Una dehesa extremeña con encinas y un camino de tierra hacia el horizonte', icono: 'arbol', acciones: ['Dehesa'], carisma: 'Tierra adentro' }),
   ...par({
-    rareza: 'I', aguante: 90, relevo: 2, claves: ['coalicion'], arquetipos: ['coalicion'],
-    acciones: [{ coste: 'XXI', dano: 50, efectos: [E.si({ c: 'coalicion', n: 2 }, [E.mas(20)])] }],
+    rareza: 'I', aguante: 100, relevo: 2, claves: ['coalicion'], arquetipos: ['coalicion'],
+    acciones: [{ coste: 'XI', dano: 40, efectos: [E.si({ c: 'coalicion', n: 2 }, [E.mas(30)])] }],
   },
     { nombre: 'Adrián Barbón', persona: 'adrian-barbon', cargo: 'Presidente del Principado de Asturias', escena: 'Una mina abandonada entre montañas verdes con niebla en el valle', icono: 'montana', acciones: ['Pacto de izquierdas'] },
     { nombre: 'Alfonso Fernández Mañueco', persona: 'manueco', cargo: 'Presidente de la Junta de Castilla y León', escena: 'Un castillo sobre un páramo dorado con un rebaño a lo lejos', icono: 'castillo', acciones: ['Gobierno de coalición'] }),
   ...par({
-    fase: 'fase1', rareza: 'R', aguante: 110, relevo: 2, arquetipos: ['tregua', 'ascenso'],
+    fase: 'fase1', rareza: 'R', aguante: 110, relevo: 2, arquetipos: ['tregua', 'ascenso', 'granCoalicion'],
     acciones: [{ coste: 'XI', dano: 40, efectos: [E.cura(20, 'fuente')] }, { coste: 'XXI', dano: 70 }],
   },
     { nombre: 'Salvador Illa · Molt Honorable', persona: 'salvador-illa', cargo: 'President de la Generalitat de Catalunya', de: 'Salvador Illa', escena: 'La galería gótica de un palacio con columnas y un jardín de naranjos al fondo', icono: 'columna', acciones: ['Pacificación', 'Govern de la Generalitat'] },
@@ -132,7 +132,7 @@ export const CARTAS_ROJO_AZUL: Carta[] = [
     { nombre: 'Pilar Bernabé', persona: 'pilar-bernabe', cargo: 'Delegada del Gobierno en la Comunitat Valenciana', escena: 'Un chaleco de emergencias colgado junto a un mapa con zonas marcadas', icono: 'telefono', acciones: ['Coordinación de emergencias'] },
     { nombre: 'Borja Sémper', persona: 'borja-semper', cargo: 'Vicesecretario de Cultura del PP', escena: 'Una guitarra apoyada en una butaca de teatro vacía', icono: 'teatro', acciones: ['Centro templado'] }),
   ...par({
-    rareza: 'I', aguante: 80, relevo: 1, arquetipos: ['tregua'],
+    rareza: 'I', aguante: 80, relevo: 1, arquetipos: ['tregua', 'granCoalicion'],
     acciones: [{ coste: 'XI', dano: 30, efectos: [{ e: 'quitarEstados', a: 'tribunaPropia' }] }],
     carisma: { disparo: 'pasiva', pasivas: [{ p: 'inmuneEstados', ambito: 'este' }] },
   },
